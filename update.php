@@ -1,3 +1,30 @@
+<?php
+include"base.php";
+$name = (isset($_REQUEST['name']) ? $_REQUEST['name'] : null);
+
+$level = (isset($_REQUEST['difficulty']) ? $_REQUEST['difficulty'] : null);
+
+$distance = (isset($_REQUEST['distance']) ? $_REQUEST['distance'] : null);
+$duree=(isset($_REQUEST['duration']) ? $_REQUEST['duration'] : null);
+
+$difference = (isset($_REQUEST['height_difference']) ? $_REQUEST['height_difference'] : null);
+$id =(isset($_REQUEST['id']) ? $_REQUEST['id'] : null);
+
+if(filter_var($name,FILTER_SANITIZE_STRING)){
+   (isset($_REQUEST['name']) ? $_REQUEST['name'] : null);
+}
+filter_var($level,FILTER_SANITIZE_STRING);
+filter_var($distance,FIL)
+
+
+
+
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,38 +33,58 @@
 	<link rel="stylesheet" href="css/basics.css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
-	<a href="/php-pdo/read.php">Liste des données</a>
+
 	<h1>Ajouter</h1>
-	<form action="" method="post">
+	<form action="update.php" method="post">
 		<div>
 			<label for="name">Name</label>
-			<input type="text" name="name" value="">
+			<input type="text" name="name" value="<?=$name?>">
 		</div>
 
 		<div>
 			<label for="difficulty">Difficulté</label>
 			<select name="difficulty">
-				<option value="très facile">Très facile</option>
-				<option value="facile">Facile</option>
-				<option value="moyen">Moyen</option>
-				<option value="difficile">Difficile</option>
-				<option value="très difficile">Très difficile</option>
+				<option value="tres facile" <?php echo ($level== 'Très facile') ? 'selected' :''?>>Trés facile</option>
+				<option value="facile" <?php echo ($level== 'facile') ? 'selected' :' '?>>facile</option>
+				<option value="moyen" <?php echo ($level== 'moyen') ? 'selected' :' '?>>moyen</option>
+				<option value="difficile" <?php echo ($level== 'difficile') ? 'selected' :' '?>>difficile</option>
+				<option value="" <?php echo ($level== 'tres difficile') ? 'selected' :' '?>>Trés difficile</option>
 			</select>
 		</div>
 		
 		<div>
 			<label for="distance">Distance</label>
-			<input type="text" name="distance" value="">
+			<input type="text" name="distance" value="<?=$distance?>">
 		</div>
 		<div>
 			<label for="duration">Durée</label>
-			<input type="duration" name="duration" value="">
+			<input type="text" name="duration" value="<?=$duree?>">
 		</div>
 		<div>
 			<label for="height_difference">Dénivelé</label>
-			<input type="text" name="height_difference" value="">
+			<input type="text" name="height_difference" value="<?=$difference?>">
+
+            <input type="hidden" name="id" value="<?=$id?>">
+            <input type="hidden" name="action" value="update">
 		</div>
-		<button type="button" name="button">Envoyer</button>
+		<button type="submit" name="button">Envoyer</button>
 	</form>
 </body>
 </html>
+<?php
+function chang($table,$nom, $level, $distance, $duree,$difference,$id)
+{
+    global $conn;
+
+    $sql = "UPDATE $table set  `name`='$nom',`difficulty`='$level',`distance`='$distance',`duration`='$duree',`height_difference`='$difference' where id=$id";
+    echo $sql;
+    $conn->query($sql);
+    echo $conn->error;
+}
+echo'<a href="read.php">Liste des données</a>';
+
+
+
+if(isset($_REQUEST['action']) and filter_var($name,FILTER_SANITIZE_STRING) and filter_var($level,FILTER_SANITIZE_STRING) and filter_var($distance,FILTER_SANITIZE_NUMBER_INT) and filter_var($duree,FILTER_SANITIZE_STRING) and filter_var($difference,FILTER_SANITIZE_NUMBER_INT)) {
+    chang('hiking', $name, $level, $distance, $duree, $difference, $id);
+}

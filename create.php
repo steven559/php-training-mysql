@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="css/basics.css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
-	<a href="/php-pdo/read.php">Liste des données</a>
+	<a href="read.php">Liste des données</a>
 	<h1>Ajouter</h1>
 	<form action="" method="post">
 		<div>
@@ -31,7 +31,7 @@
 		</div>
 		<div>
 			<label for="duration">Durée</label>
-			<input type="duration" name="duration" value="">
+			<input type="text" name="duration" value="">
 		</div>
 		<div>
 			<label for="height_difference">Dénivelé</label>
@@ -41,3 +41,35 @@
 	</form>
 </body>
 </html>
+<?php
+include "base.php";
+include"read.php";
+
+
+$level = (isset($_POST['difficulty']) ? $_POST['difficulty'] : null);
+$nom = (isset($_POST['name']) ? $_POST['name'] : null);
+$distance=(isset($_POST['distance']) ? $_POST['distance'] : null);
+$dure=(isset($_POST['duration']) ? $_POST['duration'] : null);
+$difference=(isset($_POST['height_difference']) ? $_POST['height_difference'] : null);
+
+function ajouteRand($table,$nom,$level,$distance,$dure,$difference)
+{
+    global $conn;
+
+    $associer = $conn->prepare("INSERT INTO $table (`name`,`difficulty`,`distance`,`duration`,`height_difference`)  VALUES  (?,?,?,?,?)");
+
+
+
+
+
+    $associer->bind_param("ssisi", $nom,$level,$distance,$dure,$difference);
+
+    $associer->execute();
+
+    $associer->close();
+
+}
+if(isset($_REQUEST['action']) and filter_var($nom,FILTER_SANITIZE_STRING) and filter_var($level,FILTER_SANITIZE_STRING) and filter_var($distance,FILTER_SANITIZE_NUMBER_INT) and filter_var($dure,FILTER_SANITIZE_STRING) and filter_var($difference,FILTER_SANITIZE_NUMBER_INT)) {
+    ajouteRand('hiking', $nom, $level, $distance, $dure, $difference);
+}
+affiche();
